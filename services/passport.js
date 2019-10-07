@@ -24,20 +24,16 @@ passport.use(
         proxy: true
         },
 
-        (accessToken, refreshToken, profile, done) => {
-            User.findOne({ googleId: profile.id })
-                .then((existingUser) => {
-                    if (existingUser) {
-                        // already have a record with given profile id
-                        // done function: done (ERROR, Mongoose Instance)
-                        done(null, existingUser);
-                    }
-                    else {
-                        new User({ googleId: profile.id })
-                            .save() // a mongoose instance gets returned after saving (then passed in to user)
-                            .then(user => done(null, user));
-                    }
-                });
+        async (accessToken, refreshToken, profile, done) => {
+            const existingUser = await User.findOne({ googleId: profile.id });
+
+            if (existingUser) {
+                // already have a record with given profile id
+                // done function: done (ERROR, Mongoose Instance)
+                return done(null, existingUser);
+            }
+            const user = await new User({ googleId: profile.id }).save(); // a mongoose instance gets returned after saving (then passed in to user)
+            done(null, user);
         }
     )
 );
