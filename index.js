@@ -2,14 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys.js');
 require('./models/User.js');
 require('./services/passport.js');
 // app is used to set up configuration that will listen for incoming requests and routes
 
-mongoose.connect(keys.mongoURI, {useNewUrlParser: true});
+mongoose.connect(keys.mongoURI, {useNewUrlParser: true, useUnifiedTopology: true});
 const app = express();
 
+app.use(bodyParser.json());
 app.use(
     cookieSession({
         maxAge: 30 * 24 * 60 * 60 * 1000, // cookies' expiration time (in milliseconds)
@@ -21,6 +23,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 require('./routes/authRoute.js')(app);
+require('./routes/billingRoute.js')(app);
 
 const PORT = process.env.PORT || 5000;
 
