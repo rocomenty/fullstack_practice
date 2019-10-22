@@ -5,6 +5,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys.js');
 require('./models/User.js');
+require('./models/Survey.js');
 require('./services/passport.js');
 // app is used to set up configuration that will listen for incoming requests and routes
 
@@ -24,6 +25,7 @@ app.use(passport.session());
 
 require('./routes/authRoute.js')(app);
 require('./routes/billingRoute.js')(app);
+require('./routes/surveyRoute.js')(app);
 
 if (process.env.NODE_ENV === 'production') {
     // Make sure express will serve production assets from React
